@@ -6,11 +6,8 @@ pkgs.mkShell {
     (pkgs.python311.withPackages (ps: [
       ps.discordpy
       ps.python-dotenv
+      ps.aiocron
     ]))
   ];
-
-  shellHook = ''
-    python main.py
-  '';
 }
 
