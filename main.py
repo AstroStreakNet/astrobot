@@ -1,6 +1,7 @@
-from dotenv import load_dotenv
-import discord
+
 import asyncio
+import discord
+from dotenv import load_dotenv
 import os
 
 load_dotenv()
@@ -15,26 +16,29 @@ intents.messages = True
 
 client = discord.Client(intents=intents)
 
+@client.event
+async def on_ready():
+    print(f'Starting the bot')
+    channel = client.get_channel(CHANNEL_ID)
+    if channel:
+        await channel.send("Starting the bot")
+
 async def send_to_discord_channel(message):
     channel = client.get_channel(CHANNEL_ID)
     await channel.send(message)
 
-@client.event
-async def on_ready():
-    print(f'We have logged in as {client.user}')
-
 async def read_logs():
-    with open('some/log/file', 'r') as logfile:
+    with open('logfile_pipe', 'r') as logfile:
         while True:
             line = logfile.readline().strip()
             if line:
                 await send_to_discord_channel(line)
-            else:
-                await asyncio.sleep(0.1)  # Adjust as needed
 
 async def main():
+    await client.start(TOKEN)
     await client.wait_until_ready()
     await read_logs()
 
-client.loop.create_task(main())
-client.run(TOKEN)
+if __name__ == "__main__":
+    asyncio.run(main())
+
