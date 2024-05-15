@@ -4,10 +4,16 @@ import asyncio
 import os
 
 load_dotenv()
+
 TOKEN = os.getenv('DISCORD_TOKEN')
 CHANNEL_ID = int(os.getenv('DISCORD_CHANNEL_ID'))
 
-client = discord.Client()
+intents = discord.Intents.default()
+intents.typing = False
+intents.presences = False
+intents.messages = True
+
+client = discord.Client(intents=intents)
 
 async def send_to_discord_channel(message):
     channel = client.get_channel(CHANNEL_ID)
@@ -24,7 +30,7 @@ async def read_logs():
             if line:
                 await send_to_discord_channel(line)
             else:
-                await asyncio.sleep(0.1)
+                await asyncio.sleep(0.1)  # Adjust as needed
 
 async def main():
     await client.wait_until_ready()
@@ -32,4 +38,3 @@ async def main():
 
 client.loop.create_task(main())
 client.run(TOKEN)
-
