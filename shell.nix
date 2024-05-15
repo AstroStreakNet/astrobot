@@ -2,9 +2,15 @@
 { pkgs ? import <nixpkgs> {} }:
 
 pkgs.mkShell {
-  buildInputs = with pkgs; [
-    python39
-    discord.py
+  buildInputs = [
+    (pkgs.python311.withPackages (ps: [
+      ps.discordpy
+      ps.python-dotenv
+    ]))
   ];
+
+  shellHook = ''
+    python main.py
+  '';
 }
 
